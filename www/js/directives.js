@@ -32,7 +32,7 @@ angular.module('com.htmlxprs.imageShare.directives',[]).directive('browseFile',[
         },
         templateUrl:'views/browse-file.html'
     }
-}]).directive('chatList',['$rootScope','SOCKET_URL',function($rootScope,SOCKET_URL){
+}]).directive('chatList',['$rootScope','SOCKET_URL', '$ionicPopup',function($rootScope,SOCKET_URL,$ionicPopup){
     return{
         replace:true,
         restrict:'AE',
@@ -49,11 +49,21 @@ angular.module('com.htmlxprs.imageShare.directives',[]).directive('browseFile',[
 
                 socket.emit('event:new:image',data);
 
-                scope.$apply(function(){
-                    scope.messages.unshift(data);
+            });
+
+            socket.on('event:incoming:message',function(data){
+
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Incoming Message',
+                    template: data.message
+                });
+                alertPopup.then(function(res) {
+                    console.log('Thank you for not eating my delicious ice cream cone');
                 });
 
+
             });
+
 
             socket.on('event:incoming:image',function(data){
 
@@ -61,6 +71,16 @@ angular.module('com.htmlxprs.imageShare.directives',[]).directive('browseFile',[
                     scope.messages.unshift(data);
                 });
 
+
+                /*
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Don\'t eat that!',
+                    template: 'It might taste good'
+                });
+                alertPopup.then(function(res) {
+                    console.log('Thank you for not eating my delicious ice cream cone');
+                });
+                */
             });
 
         },
